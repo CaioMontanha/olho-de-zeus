@@ -7,17 +7,40 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgres://zeus:zeus@localhost:5432/zeus' })
+const frankfurterUrl = process.env.FRANKFURTER_URL || 'https://api.frankfurter.dev/v2/rate/EUR/USD'
+const checkTimeoutMs = 4500
 const modes = new Map<number, { mode: 'degraded' | 'down'; until: number }>()
-const causes = ['timeout no gateway de cartão', 'pool de conexões esgotado', 'deploy com rollback', 'certificado perto de expirar', 'fila de mensagens acumulada']
 
 async function serviceBySlug(slug: string) {
   return (await pool.query('select * from services where slug=$1', [slug])).rows[0]
 }
+
 function activeMode(id: number) {
   const value = modes.get(id)
   if (!value || value.until <= Date.now()) { modes.delete(id); return null }
   return value
 }
+
+function validFrankfurterResponse(value: unknown): value is { rate: number } {
+  if (!value || typeof value !== 'object' || !('rate' in value)) return false
+  const rate = (value as { rate: unknown }).rate
+  return typeof rate === 'number' && Number.isFinite(rate) && rate > 0
+}
+
+async function checkFrankfurter() {
+  const started = performance.now()
+  let statusCode = 0
+  try {
+    const response = await fetch(frankfurterUrl, { signal: AbortSignal.timeout(checkTimeoutMs), headers: { accept: 'application/json' } })
+    statusCode = response.status
+    const payload: unknown = await response.json()
+    const latency = Math.round(performance.now() - started)
+    return { ok: response.ok && validFrankfurterResponse(payload), latency, statusCode }
+  } catch {
+    return { ok: false, latency: Math.round(performance.now() - started), statusCode }
+  }
+}
+
 async function getServices() {
   const { rows } = await pool.query('select * from services order by id')
   return Promise.all(rows.map(async (s) => {
@@ -55,19 +78,25 @@ app.post('/api/services/:slug/simulate', async (req, res, next) => { try {
   res.status(202).json({ service: service.slug, mode, expires_at: new Date(until).toISOString() })
 } catch (e) { next(e) } })
 
-setInterval(async () => { try {
-  const { rows } = await pool.query('select * from services')
-  for (const s of rows) {
-    const forced = activeMode(s.id)
-    const ok = forced?.mode === 'down' ? false : forced?.mode === 'degraded' ? Math.random() >= 0.3 : Math.random() >= 0.02
-    const latency = Math.round(s.base_latency_ms * (forced?.mode === 'degraded' ? 4 : 0.8 + Math.random() * 0.4))
-    await pool.query('insert into checks(service_id, latency_ms, ok, status_code) values($1,$2,$3,$4)', [s.id, latency, ok, ok ? 200 : 503])
-    const severity = ok ? null : forced?.mode === 'degraded' ? 'degraded' : 'down'
-    const open = (await pool.query('select * from incidents where service_id=$1 and resolved_at is null', [s.id])).rows[0]
-    if (!open && severity) await pool.query('insert into incidents(service_id,severity,cause,simulated) values($1,$2,$3,$4)', [s.id, severity, forced ? `simulação ${forced.mode}` : causes[Math.floor(Math.random() * causes.length)], Boolean(forced)])
-    if (open && ok) await pool.query('update incidents set resolved_at=now() where id=$1', [open.id])
-  }
-} catch (e) { console.error('[v0] ciclo de status:', e) } }, 5000)
+async function runCheckCycle() {
+  try {
+    const { rows } = await pool.query('select * from services')
+    for (const service of rows) {
+      const forced = activeMode(service.id)
+      const result = forced
+        ? { ok: forced.mode === 'degraded', latency: Math.round(service.base_latency_ms * (forced.mode === 'degraded' ? 4 : 1)), statusCode: forced.mode === 'degraded' ? 200 : 503 }
+        : await checkFrankfurter()
+      await pool.query('insert into checks(service_id, latency_ms, ok, status_code) values($1,$2,$3,$4)', [service.id, result.latency, result.ok, result.statusCode])
+      const severity = result.ok ? null : 'down'
+      const open = (await pool.query('select * from incidents where service_id=$1 and resolved_at is null', [service.id])).rows[0]
+      if (!open && severity) await pool.query('insert into incidents(service_id,severity,cause,simulated) values($1,$2,$3,$4)', [service.id, severity, forced ? `simulação ${forced.mode}` : 'falha na API Frankfurter', Boolean(forced)])
+      if (open && result.ok) await pool.query('update incidents set resolved_at=now() where id=$1', [open.id])
+    }
+  } catch (e) { console.error('[v0] ciclo de status:', e) }
+}
+
+setInterval(runCheckCycle, 5000)
+void runCheckCycle()
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => res.status(500).json({ erro: 'INTERNAL_ERROR', mensagem: err.message }))
 app.listen(Number(process.env.PORT) || 4000, () => console.log('API Olho de Zeus na porta 4000'))
