@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: zeus
+      POSTGRES_USER: zeus
+      POSTGRES_PASSWORD: zeus
+    ports: ["5432:5432"]
+    volumes: ["./db/init.sql:/docker-entrypoint-initdb.d/init.sql"]
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgres://zeus:zeus@db:5432/zeus
+      PORT: 3001
+    depends_on: [db]
+    ports: ["3001:3001"]
+  web:
+    build: ./web
+    depends_on: [api]
+    ports: ["5173:5173"]
