@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Service Health Dashboard - OLHO DE ZEUS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#F0FDF4',
+              500: '#16A34A',
+              600: '#15803D',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .animate-pulse-live {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-slate-200">
+<!-- Header minimalista do Dashboard -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+<div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shadow-sm font-semibold text-sm tracking-tight">
+          ZD
+        </div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-sm font-semibold text-slate-900 leading-tight tracking-tight">Zeus Dashboard</h1>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Production</span>
+</div>
+<p class="text-[11px] text-slate-500 font-normal">Monitoramento de Resiliência &amp; Simulação de Caos</p>
+</div>
+</div>
+<!-- Quick Actions / Meta Info -->
+<div class="flex items-center gap-4 text-xs">
+<div class="hidden sm:flex items-center gap-1.5 text-slate-500"><span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse-live"></span><span class="text-amber-800 font-medium">Desconectado da API</span></div>
+<div class="h-4 w-px bg-slate-200"></div>
+<div class="text-slate-400 font-mono text-[11px]">v2.14.0-chaos</div>
+</div>
+</div>
+</header>
+<!-- Conteúdo Principal -->
+<div class="bg-amber-50 border-b border-amber-200/90 text-amber-900 transition-all"><div class="max-w-6xl mx-auto px-6 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs"><div class="flex items-center gap-2.5"><div class="w-5 h-5 rounded-full bg-amber-200/80 flex items-center justify-center text-amber-800 shrink-0"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div><div class="flex flex-wrap items-center gap-1.5"><span class="font-semibold text-amber-950">Sem conexão com a API:</span><span class="text-amber-800">Tentando reconectar automaticamente…</span><span class="inline-flex items-center gap-1 text-[11px] text-amber-700 font-mono ml-1"><svg class="w-3 h-3 text-amber-600 animate-spin" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>tentativa 3 de 5</span></div></div><div class="flex items-center gap-2 self-end sm:self-auto"><button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 hover:text-amber-950 shadow-2xs transition-colors" type="button">Tentar agora</button></div></div></div><main class="max-w-6xl w-full mx-auto px-6 py-8 flex-1">
+<!-- Breadcrumb & Top Bar -->
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+<span>Serviços Principais</span>
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-slate-700 font-medium">Gateway &amp; Transações</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900">Visão Geral dos Microserviços</h2>
+</div>
+<!-- Live Clock / Refresh -->
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono text-slate-600 bg-white border border-slate-200 shadow-sm">
+<svg class="w-3.5 h-3.5 text-slate-400 animate-spin" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span id="current-clock">Reconectando em 4s</span>
+</span>
+</div>
+</div>
+<!-- Grid de Serviços -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+<!-- CARD PRINCIPAL: payment-api (com OLHO DE ZEUS embutido) -->
+<div class="bg-white rounded-xl border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden relative group" id="payment-card">
+<!-- Indicador de topo de estado dinâmico -->
+<div class="h-1 bg-slate-300 transition-colors duration-300" id="card-top-stripe"></div>
+<!-- Seção Superior do Serviço -->
+<div class="p-5 pb-4">
+<div class="flex items-start justify-between gap-3 mb-3">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-base font-semibold text-slate-900 tracking-tight font-mono">payment-api</h3>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60 font-sans">v3.4.1</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Gateway de pagamentos, checkout e liquidação</p>
+</div>
+<!-- Badge de Status Atual (Mutável na simulação) -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 shadow-2xs transition-all duration-300" id="status-badge"><span class="w-1.5 h-1.5 rounded-full bg-slate-400" id="status-dot"></span><span id="status-text">Indisponível</span></div>
+</div>
+<!-- Métricas de Desempenho (Latência e Uptime) -->
+<div class="grid grid-cols-2 gap-3 py-3 px-3.5 bg-slate-50/80 rounded-lg border border-slate-100"><div><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Latência P99</span><div class="flex items-baseline gap-1 mt-0.5"><span class="text-sm font-semibold font-mono text-slate-400" id="metric-latency">—</span><span class="text-[10px] text-slate-400 font-medium">sem dados</span></div></div><div class="border-l border-slate-200/60 pl-3.5"><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Uptime 30d</span><div class="flex items-baseline gap-1 mt-0.5"><span class="text-sm font-semibold font-mono text-slate-400">—</span><span class="text-[10px] text-slate-400">desconectado</span></div></div></div>
+</div>
+<!-- DIVISOR COM IDENTIFICAÇÃO DO OLHO DE ZEUS -->
+<div class="px-5 pt-3 pb-1 border-t border-slate-100 bg-slate-50/40">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<!-- Ícone estilizado do Olho de Zeus (Raio / Olho Administrativo) -->
+<svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-bold tracking-wider uppercase text-slate-700">Simulação “OLHO DE ZEUS”</span>
+</div>
+<span class="text-[10px] text-slate-400 font-mono tracking-tight">Chaos Injector</span>
+</div>
+</div>
+<!-- ÁREA DE CONTROLE REALISTA: OLHO DE ZEUS -->
+<div class="p-5 pt-3 bg-slate-50/40">
+<!-- Formulário / Controles de Injeção -->
+<div class="space-y-3" id="simulation-controls-panel"><div class="space-y-3 opacity-50 pointer-events-none"><div class="grid grid-cols-2 gap-2.5"><div><label class="block text-[11px] font-medium text-slate-600 mb-1" for="chaos-status">Status Alvo</label><div class="relative"><select class="w-full h-8 pl-2.5 pr-7 text-xs bg-slate-100 border border-slate-300 rounded-md text-slate-500 font-medium cursor-not-allowed appearance-none" disabled="" id="chaos-status"><option selected="" value="Degraded">Degraded</option></select></div></div><div><label class="block text-[11px] font-medium text-slate-600 mb-1" for="chaos-duration">Duração</label><div class="relative"><select class="w-full h-8 pl-2.5 pr-7 text-xs bg-slate-100 border border-slate-300 rounded-md text-slate-500 font-medium cursor-not-allowed appearance-none" disabled="" id="chaos-duration"><option selected="" value="60">60 segundos</option></select></div></div></div><button class="w-full h-8 flex items-center justify-center gap-1.5 px-3 rounded-md bg-slate-300 text-slate-500 text-xs font-medium tracking-tight shadow-sm cursor-not-allowed" disabled="" id="btn-simulate" type="button"><span>Simular</span></button></div><p class="text-[10px] text-center text-amber-800/80 font-medium pt-1">Controles de injeção indisponíveis sem conexão com a API.</p></div>
+<!-- ESTADO DE CONFIRMAÇÃO COMPACTO APÓS AÇÃO (Oculto inicialmente) -->
+<div class="hidden mt-1 p-2.5 rounded-lg border border-amber-200 bg-amber-50/80 transition-all duration-200" id="simulation-active-state">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<div class="mt-0.5 w-2 h-2 rounded-full bg-amber-500 animate-ping"></div>
+<div>
+<div class="text-[11px] font-semibold text-amber-900 leading-tight">
+                    Simulação iniciada — expira em <span class="font-mono font-bold text-amber-950" id="countdown-timer">60s</span>
+</div>
+<p class="text-[10px] text-amber-800/80 mt-0.5 leading-snug">
+                    Impacto ativo: <span class="font-mono font-medium" id="active-impact-label">Degraded</span> (injetado via Olho de Zeus).
+                  </p>
+</div>
+</div>
+<button class="text-[10px] font-medium text-amber-800 hover:text-amber-950 bg-amber-100 hover:bg-amber-200/80 px-2 py-0.5 rounded transition-colors whitespace-nowrap border border-amber-300/60" id="btn-abort" title="Cancelar simulação" type="button">
+                Interromper
+              </button>
+</div>
+<!-- Barra de progresso do timer -->
+<div class="w-full bg-amber-200/70 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-amber-500 h-1 rounded-full w-full transition-all duration-1000 ease-linear" id="progress-bar"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- CARD 2: auth-service (Contexto de Dashboard) -->
+<div class="bg-white rounded-xl border border-slate-200/90 shadow-sm p-5 opacity-90 hover:opacity-100 transition-opacity"><div class="h-1 -mt-5 -mx-5 bg-slate-300 mb-5"></div><div class="flex items-start justify-between gap-3 mb-3"><div><div class="flex items-center gap-2"><h3 class="text-base font-semibold text-slate-900 tracking-tight font-mono">auth-service</h3><span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60 font-sans">v2.1.0</span></div><p class="text-xs text-slate-500 mt-0.5">OAuth 2.0, JWT Tokens e MFA</p></div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Indisponível</span></div><div class="grid grid-cols-2 gap-3 py-3 px-3.5 bg-slate-50/80 rounded-lg border border-slate-100"><div><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Latência P99</span><span class="text-sm font-semibold font-mono text-slate-400">—</span></div><div class="border-l border-slate-200/60 pl-3.5"><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Uptime 30d</span><span class="text-sm font-semibold font-mono text-slate-400">—</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400"><span>Última sincronização há 4 min</span><span class="font-mono text-[11px]">Sem dados recentes</span></div></div>
+<!-- CARD 3: notification-hub (Contexto de Dashboard) -->
+<div class="bg-white rounded-xl border border-slate-200/90 shadow-sm p-5 opacity-90 hover:opacity-100 transition-opacity"><div class="h-1 -mt-5 -mx-5 bg-slate-300 mb-5"></div><div class="flex items-start justify-between gap-3 mb-3"><div><div class="flex items-center gap-2"><h3 class="text-base font-semibold text-slate-900 tracking-tight font-mono">notification-hub</h3><span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60 font-sans">v1.8.2</span></div><p class="text-xs text-slate-500 mt-0.5">Mensageria, Webhooks e Push</p></div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Indisponível</span></div><div class="grid grid-cols-2 gap-3 py-3 px-3.5 bg-slate-50/80 rounded-lg border border-slate-100"><div><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Latência P99</span><span class="text-sm font-semibold font-mono text-slate-400">—</span></div><div class="border-l border-slate-200/60 pl-3.5"><span class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider">Uptime 30d</span><span class="text-sm font-semibold font-mono text-slate-400">—</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400"><span>Última sincronização há 4 min</span><span class="font-mono text-[11px]">Sem dados recentes</span></div></div>
+</div>
+<!-- Banner informativo inferior -->
+<div class="mt-8 space-y-6"><div class="bg-white rounded-xl border border-slate-200/90 shadow-sm p-5"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-slate-100"><div><h3 class="text-sm font-semibold text-slate-900 tracking-tight">Métricas de Tráfego e Latência (Últimas 24h)</h3><p class="text-xs text-slate-500">Throughput global, p95 e taxa de erro em tempo real</p></div><div class="flex items-center gap-2"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 text-slate-500 border border-slate-200">Status: Offline</span></div></div><div class="py-12 flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-lg border border-dashed border-slate-200 mt-4"><div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2.5"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><p class="text-sm font-semibold text-slate-700">Dados indisponíveis</p><p class="text-xs text-slate-400 mt-0.5 max-w-sm">Aguardando restabelecimento do serviço de telemetria para plotar métricas de séries temporais.</p></div></div><div class="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden"><div class="p-5 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"><div><h3 class="text-sm font-semibold text-slate-900 tracking-tight">Registro de Incidentes e Simulações</h3><p class="text-xs text-slate-500">Histórico de anomalias, execuções de caos e falhas sintéticas</p></div><button class="text-xs font-medium text-slate-600 hover:text-slate-900 self-start sm:self-auto inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200/70 border border-slate-200 transition-colors" type="button"><svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>Recarregar tabela</button></div><div class="overflow-x-auto"><table class="w-full text-left text-xs border-t border-slate-100"><thead class="bg-slate-50 text-[11px] uppercase font-semibold text-slate-500 tracking-wider"><tr><th class="px-5 py-2.5">Serviço</th><th class="px-4 py-2.5">Tipo</th><th class="px-4 py-2.5">Severidade</th><th class="px-4 py-2.5">Duração</th><th class="px-4 py-2.5">Horário</th><th class="px-5 py-2.5">Status</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-600"><tr><td class="px-5 py-8 text-center text-slate-400 bg-slate-50/30" colspan="6"><div class="flex flex-col items-center justify-center gap-1"><span class="text-xs font-medium text-slate-600">Não foi possível atualizar os incidentes</span><span class="text-[11px] text-slate-400">A API remota não respondeu dentro da janela de requisição (timeout 504).</span></div></td></tr></tbody></table></div></div></div><div class="mt-8 p-4 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-600"><div class="flex items-center gap-2.5"><div class="w-6 h-6 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center font-mono font-bold text-[11px]">!</div><div><span class="font-semibold text-slate-900">Modo Offline / Dados em Cache:</span> Algumas informações podem estar desatualizadas até que a conectividade com o nó central seja restabelecida.</div></div><div class="flex items-center gap-2 self-end sm:self-auto font-mono text-[11px] text-slate-400"><span>Status: Polling retry</span></div></div>
+</main>
+<!-- Rodapé -->
+<footer class="bg-white border-t border-slate-200 py-4 px-6 text-xs text-slate-400 text-center">
+    Zeus Chaos Engineering Platform © 2025 • Controle Interno de Resiliência
+  </footer>
+<!-- Script Interativo Inline -->
+<script>
+    (function() {
+      const selectStatus = document.getElementById('chaos-status');
+      const selectDuration = document.getElementById('chaos-duration');
+      const btnSimulate = document.getElementById('btn-simulate');
+      const btnAbort = document.getElementById('btn-abort');
+      
+      const controlsPanel = document.getElementById('simulation-controls-panel');
+      const activeState = document.getElementById('simulation-active-state');
+      const countdownTimer = document.getElementById('countdown-timer');
+      const progressBar = document.getElementById('progress-bar');
+      const activeImpactLabel = document.getElementById('active-impact-label');
+      
+      // Elementos do card de serviço
+      const cardTopStripe = document.getElementById('card-top-stripe');
+      const statusBadge = document.getElementById('status-badge');
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+      const metricLatency = document.getElementById('metric-latency');
+
+      let timerInterval = null;
+      let totalSeconds = 60;
+      let remainingSeconds = 60;
+
+      function startSimulation() {
+        const chosenStatus = selectStatus.value;
+        totalSeconds = parseInt(selectDuration.value, 10) || 60;
+        remainingSeconds = totalSeconds;
+
+        // Atualiza UI de status do payment-api
+        if (chosenStatus === 'Degraded') {
+          cardTopStripe.className = 'h-1 bg-amber-500 transition-colors duration-300';
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs transition-all duration-300';
+          statusDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse-live';
+          statusText.textContent = 'Degraded (Simulado)';
+          metricLatency.textContent = '840ms';
+          metricLatency.nextElementSibling.className = 'text-[10px] text-amber-600 font-medium';
+          metricLatency.nextElementSibling.textContent = 'degradado';
+        } else if (chosenStatus === 'Down') {
+          cardTopStripe.className = 'h-1 bg-rose-500 transition-colors duration-300';
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs transition-all duration-300';
+          statusDot.className = 'w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping';
+          statusText.textContent = 'Down (Simulado)';
+          metricLatency.textContent = 'Timeout';
+          metricLatency.nextElementSibling.className = 'text-[10px] text-rose-600 font-medium';
+          metricLatency.nextElementSibling.textContent = '503 error';
+        }
+
+        // Atualiza painel de confirmação e contagem
+        activeImpactLabel.textContent = chosenStatus;
+        countdownTimer.textContent = remainingSeconds + 's';
+        progressBar.style.width = '100%';
+
+        // Alterna os painéis
+        controlsPanel.classList.add('opacity-50', 'pointer-events-none');
+        activeState.classList.remove('hidden');
+
+        // Intervalo do timer
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          remainingSeconds--;
+          countdownTimer.textContent = remainingSeconds + 's';
+          const pct = Math.max(0, (remainingSeconds / totalSeconds) * 100);
+          progressBar.style.width = pct + '%';
+
+          if (remainingSeconds <= 0) {
+            resetToOperational();
+          }
+        }, 1000);
+      }
+
+      function resetToOperational() {
+        clearInterval(timerInterval);
+        
+        // Retorna estado do serviço para Operational
+        cardTopStripe.className = 'h-1 bg-emerald-500 transition-colors duration-300';
+        statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs transition-all duration-300';
+        statusDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-live';
+        statusText.textContent = 'Operational';
+        metricLatency.textContent = '42ms';
+        metricLatency.nextElementSibling.className = 'text-[10px] text-emerald-600 font-medium';
+        metricLatency.nextElementSibling.textContent = 'normal';
+
+        // Restaura painel de controles
+        controlsPanel.classList.remove('opacity-50', 'pointer-events-none');
+        activeState.classList.add('hidden');
+      }
+
+      btnSimulate.addEventListener('click', startSimulation);
+      btnAbort.addEventListener('click', resetToOperational);
+    })();
+  </script>
+</body>
+</html>

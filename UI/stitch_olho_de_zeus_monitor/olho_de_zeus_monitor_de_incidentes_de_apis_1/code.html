@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OLHO DE ZEUS — Monitor de incidentes de APIs</title>
+<!-- Typography: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#c3c6d7",
+            "on-primary-fixed": "#00174b",
+            "on-tertiary-container": "#ffecea",
+            "primary": "#004ac6",
+            "surface-container-high": "#e2e7ff",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#00714d",
+            "tertiary": "#ab0b1c",
+            "tertiary-fixed": "#ffdad7",
+            "surface-container-low": "#f2f3ff",
+            "inverse-primary": "#b4c5ff",
+            "outline": "#737686",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-lowest": "#ffffff",
+            "inverse-on-surface": "#eef0ff",
+            "surface-variant": "#dae2fd",
+            "surface-bright": "#faf8ff",
+            "secondary": "#006c49",
+            "primary-container": "#2563eb",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#410004",
+            "on-background": "#131b2e",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-tint": "#0053db",
+            "inverse-surface": "#283044",
+            "on-tertiary-fixed-variant": "#930013",
+            "surface": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#005236",
+            "on-primary-fixed-variant": "#003ea8",
+            "background": "#faf8ff",
+            "on-surface": "#131b2e",
+            "surface-container": "#eaedff",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#6ffbbe",
+            "on-error": "#ffffff",
+            "secondary-container": "#6cf8bb",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#002113",
+            "on-primary-container": "#eeefff",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "secondary-fixed-dim": "#4edea3",
+            "surface-dim": "#d2d9f4",
+            "error": "#ba1a1a",
+            "tertiary-container": "#cf2c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "1.75rem",
+            "space-md": "0.75rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "gutter": "1rem",
+            "margin-desktop": "2rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-sm": ["Inter"],
+            "code-metric": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "label-mono": ["JetBrains Mono"],
+            "display-lg-mobile": ["Inter"],
+            "headline-md": ["Inter"],
+            "code-body": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "code-metric": ["24px", { "lineHeight": "28px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-mono": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "display-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-body": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #F5F7FA;
+      color: #131B2E;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
+      display: inline-block;
+    }
+    .card-base {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+<!-- Shell Canvas Wrapper (1440px Centered Workspace) -->
+<div class="max-w-[1440px] mx-auto px-6 py-6 flex flex-col gap-6">
+<!-- 1. CABEÇALHO COMPACTO -->
+<header class="card-base p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary border border-outline-variant/40 shrink-0">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<div class="flex items-center gap-2.5">
+<h1 class="font-headline-md text-headline-md tracking-tight text-on-surface font-bold">OLHO DE ZEUS</h1>
+<span class="px-2 py-0.5 rounded text-[11px] font-label-mono bg-surface-container text-primary font-semibold tracking-wide border border-primary/20">SRE GATEWAY</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Monitor de incidentes de APIs</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<!-- Live Auto-refresh Pill -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-lowest border border-outline-variant/40 text-on-surface text-body-sm font-body-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span class="text-on-surface-variant font-body-sm">Atualizado há poucos segundos</span>
+</div>
+<!-- Environment Cluster Badge -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant/30 text-on-surface-variant text-body-sm font-body-sm">
+<span class="material-symbols-outlined text-base text-primary">dns</span>
+<span class="font-label-mono text-[11px] text-on-surface font-medium">Cluster Prod-BR</span>
+<span class="text-outline">•</span>
+<span class="font-body-sm text-[12px]">Gateway de Pagamentos</span>
+</div>
+<!-- Refresh & Rate Control -->
+<div class="flex items-center border border-outline-variant/40 rounded-lg overflow-hidden bg-surface-container-lowest">
+<button class="flex items-center gap-1.5 px-3 py-1.5 text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low transition-colors duration-150 border-r border-outline-variant/40" id="btn-manual-refresh" title="Atualizar Métricas">
+<span class="material-symbols-outlined text-[16px] text-primary" id="refresh-icon">refresh</span>
+<span>Sync</span>
+</button>
+<div class="px-2.5 py-1.5 text-body-sm font-body-sm text-on-surface-variant bg-surface-bright flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-outline">timelapse</span>
+<span class="font-label-mono text-[11px]">Auto-refresh: 10s</span>
+</div>
+</div>
+</div>
+</header>
+<!-- 2. SEÇÃO PRINCIPAL - TRÊS CARDS DE SERVIÇOS (Grid 3 Colunas) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- CARD 1: payment-api -->
+<div class="card-base p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-200">
+<div>
+<!-- Top Row: Service Name & Operational Badge -->
+<div class="flex items-start justify-between gap-2 mb-4">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">credit_card</span>
+<span class="font-code-body text-[14px] font-semibold text-on-surface">payment-api</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Core Payments &amp; Transactions</span>
+</div>
+<!-- Operational Badge -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+</span>
+<span class="font-body-sm text-body-sm font-medium">Operational</span>
+</div>
+</div>
+<!-- Middle Metrics Tier -->
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<!-- Latency -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Latência (5 min)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface" id="lat-payment">34 ms</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">p95: 58ms</span>
+</div>
+</div>
+<!-- Uptime -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Uptime (24h)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface">99.9%</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-medium">Meta: 99.9%</span>
+</div>
+</div>
+</div>
+<!-- Sparkline & Endpoint Details -->
+<div class="mt-4 mb-5">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1.5">
+<span class="font-label-mono text-[11px] text-outline font-medium">Throughput &amp; Endpoint</span>
+<span class="font-code-body text-[11px] text-on-surface font-medium">1.420 req/s</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded bg-surface-bright border border-[#E2E8F0]">
+<span class="px-1.5 py-0.5 rounded font-label-mono text-[10px] bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">POST</span>
+<span class="font-code-body text-[12px] text-on-surface font-medium truncate">/v1/charges</span>
+</div>
+<!-- Mini Sparkline Latency -->
+<div class="mt-3">
+<div class="h-9 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 240 36">
+<defs>
+<lineargradient id="grad-pay" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563EB" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<path d="M 0,28 L 24,26 L 48,22 L 72,25 L 96,18 L 120,20 L 144,14 L 168,17 L 192,12 L 216,15 L 240,11 L 240,36 L 0,36 Z" fill="url(#grad-pay)"></path>
+<path d="M 0,28 L 24,26 L 48,22 L 72,25 L 96,18 L 120,20 L 144,14 L 168,17 L 192,12 L 216,15 L 240,11" fill="none" stroke="#2563EB" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle cx="240" cy="11" fill="#2563EB" r="3"></circle>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Simulation Controller Footer -->
+<div class="pt-3 border-t border-[#F1F5F9]">
+<span class="font-label-mono text-[10px] text-on-surface-variant uppercase tracking-wider mb-2 block font-semibold">Simulador de Falhas</span>
+<div class="flex items-center gap-2">
+<select class="w-full text-body-sm font-body-sm rounded-lg border-outline-variant/40 bg-surface-bright text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary py-1.5 px-2.5" id="sim-select-payment">
+<option value="Timeout 5000ms">Timeout 5000ms</option>
+<option value="Latência +800ms">Latência +800ms</option>
+<option value="Erro HTTP 500">Erro HTTP 500</option>
+<option value="Falha no Gateway Adquirente">Falha no Gateway Adquirente</option>
+</select>
+<button class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-[#1D4ED8] text-on-primary text-body-sm font-body-sm font-medium shrink-0 transition-colors duration-150 shadow-sm active:scale-98" onclick="triggerSimulation('payment-api', 'sim-select-payment')">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Simular</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 2: auth-api -->
+<div class="card-base p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-200">
+<div>
+<!-- Top Row: Service Name & Operational Badge -->
+<div class="flex items-start justify-between gap-2 mb-4">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+<span class="font-code-body text-[14px] font-semibold text-on-surface">auth-api</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">OAuth 2.0 &amp; Token Authority</span>
+</div>
+<!-- Operational Badge -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+</span>
+<span class="font-body-sm text-body-sm font-medium">Operational</span>
+</div>
+</div>
+<!-- Middle Metrics Tier -->
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<!-- Latency -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Latência (5 min)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface" id="lat-auth">18 ms</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">p95: 29ms</span>
+</div>
+</div>
+<!-- Uptime -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Uptime (24h)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface">100.0%</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-medium">Meta: 99.9%</span>
+</div>
+</div>
+</div>
+<!-- Sparkline & Endpoint Details -->
+<div class="mt-4 mb-5">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1.5">
+<span class="font-label-mono text-[11px] text-outline font-medium">Throughput &amp; Endpoint</span>
+<span class="font-code-body text-[11px] text-on-surface font-medium">890 req/s</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded bg-surface-bright border border-[#E2E8F0]">
+<span class="px-1.5 py-0.5 rounded font-label-mono text-[10px] bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">POST</span>
+<span class="font-code-body text-[12px] text-on-surface font-medium truncate">/v1/oauth/token</span>
+</div>
+<!-- Mini Sparkline Latency -->
+<div class="mt-3">
+<div class="h-9 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 240 36">
+<defs>
+<lineargradient id="grad-auth" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#10B981" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#10B981" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<path d="M 0,20 L 24,19 L 48,17 L 72,18 L 96,16 L 120,15 L 144,17 L 168,14 L 192,15 L 216,13 L 240,12 L 240,36 L 0,36 Z" fill="url(#grad-auth)"></path>
+<path d="M 0,20 L 24,19 L 48,17 L 72,18 L 96,16 L 120,15 L 144,17 L 168,14 L 192,15 L 216,13 L 240,12" fill="none" stroke="#10B981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle cx="240" cy="12" fill="#10B981" r="3"></circle>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Simulation Controller Footer -->
+<div class="pt-3 border-t border-[#F1F5F9]">
+<span class="font-label-mono text-[10px] text-on-surface-variant uppercase tracking-wider mb-2 block font-semibold">Simulador de Falhas</span>
+<div class="flex items-center gap-2">
+<select class="w-full text-body-sm font-body-sm rounded-lg border-outline-variant/40 bg-surface-bright text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary py-1.5 px-2.5" id="sim-select-auth">
+<option value="Expirar Token JWT">Expirar Token JWT</option>
+<option value="Rate Limit 429">Rate Limit 429</option>
+<option value="Delay no Redis de Sessão">Delay no Redis de Sessão</option>
+</select>
+<button class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-[#1D4ED8] text-on-primary text-body-sm font-body-sm font-medium shrink-0 transition-colors duration-150 shadow-sm active:scale-98" onclick="triggerSimulation('auth-api', 'sim-select-auth')">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Simular</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 3: orders-api -->
+<div class="card-base p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-200">
+<div>
+<!-- Top Row: Service Name & Operational Badge -->
+<div class="flex items-start justify-between gap-2 mb-4">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">shopping_cart_checkout</span>
+<span class="font-code-body text-[14px] font-semibold text-on-surface">orders-api</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Order Pipeline &amp; Kafka Events</span>
+</div>
+<!-- Operational Badge -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+</span>
+<span class="font-body-sm text-body-sm font-medium">Operational</span>
+</div>
+</div>
+<!-- Middle Metrics Tier -->
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<!-- Latency -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Latência (5 min)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface" id="lat-orders">42 ms</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">p95: 72ms</span>
+</div>
+</div>
+<!-- Uptime -->
+<div>
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Uptime (24h)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-metric text-code-metric text-on-surface">99.8%</span>
+<span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-medium">Meta: 99.9%</span>
+</div>
+</div>
+</div>
+<!-- Sparkline & Endpoint Details -->
+<div class="mt-4 mb-5">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1.5">
+<span class="font-label-mono text-[11px] text-outline font-medium">Throughput &amp; Endpoint</span>
+<span class="font-code-body text-[11px] text-on-surface font-medium">650 req/s</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded bg-surface-bright border border-[#E2E8F0]">
+<span class="px-1.5 py-0.5 rounded font-label-mono text-[10px] bg-blue-50 text-blue-700 font-bold border border-blue-200">GET</span>
+<span class="font-code-body text-[12px] text-on-surface font-medium truncate">/v1/orders/checkout</span>
+</div>
+<!-- Mini Sparkline Latency -->
+<div class="mt-3">
+<div class="h-9 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 240 36">
+<defs>
+<lineargradient id="grad-ord" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#6366F1" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#6366F1" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<path d="M 0,26 L 24,24 L 48,27 L 72,21 L 96,25 L 120,19 L 144,22 L 168,18 L 192,23 L 216,19 L 240,16 L 240,36 L 0,36 Z" fill="url(#grad-ord)"></path>
+<path d="M 0,26 L 24,24 L 48,27 L 72,21 L 96,25 L 120,19 L 144,22 L 168,18 L 192,23 L 216,19 L 240,16" fill="none" stroke="#6366F1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle cx="240" cy="16" fill="#6366F1" r="3"></circle>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Simulation Controller Footer -->
+<div class="pt-3 border-t border-[#F1F5F9]">
+<span class="font-label-mono text-[10px] text-on-surface-variant uppercase tracking-wider mb-2 block font-semibold">Simulador de Falhas</span>
+<div class="flex items-center gap-2">
+<select class="w-full text-body-sm font-body-sm rounded-lg border-outline-variant/40 bg-surface-bright text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary py-1.5 px-2.5" id="sim-select-orders">
+<option value="Bloqueio de Fila Kafka">Bloqueio de Fila Kafka</option>
+<option value="Erro de Conexão Postgres">Erro de Conexão Postgres</option>
+<option value="Timeout Webhook">Timeout Webhook</option>
+</select>
+<button class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-[#1D4ED8] text-on-primary text-body-sm font-body-sm font-medium shrink-0 transition-colors duration-150 shadow-sm active:scale-98" onclick="triggerSimulation('orders-api', 'sim-select-orders')">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Simular</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. SEÇÃO 'DISPONIBILIDADE — ÚLTIMA HORA' (Card Grande de Tela Inteira) -->
+<section class="card-base p-6">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[#F1F5F9] gap-4">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-[20px]">insights</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Disponibilidade — última hora</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Telemetria contínua com agregação em janelas de 60 segundos</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<!-- Avg Availability Metric -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200">
+<span class="material-symbols-outlined text-emerald-700 text-[18px]">verified</span>
+<span class="font-label-mono text-[13px] font-semibold text-emerald-800">99.98% uptime médio</span>
+</div>
+<!-- Color Legends -->
+<div class="flex items-center gap-4 bg-surface-bright px-3 py-1.5 rounded-lg border border-outline-variant/30">
+<!-- Payment API -->
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#2563EB]"></span>
+<span class="font-code-body text-[12px] font-medium text-on-surface">payment-api</span>
+<span class="font-label-mono text-[11px] text-on-surface-variant">(99.9%)</span>
+</div>
+<!-- Auth API -->
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#10B981]"></span>
+<span class="font-code-body text-[12px] font-medium text-on-surface">auth-api</span>
+<span class="font-label-mono text-[11px] text-on-surface-variant">(100.0%)</span>
+</div>
+<!-- Orders API -->
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#6366F1]"></span>
+<span class="font-code-body text-[12px] font-medium text-on-surface">orders-api</span>
+<span class="font-label-mono text-[11px] text-on-surface-variant">(99.8%)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- High Precision SVG Timeseries Chart -->
+<div class="pt-6">
+<div class="relative w-full h-64">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 240">
+<defs>
+<!-- Gradient under primary line (payment-api) -->
+<lineargradient id="area-payment" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563EB" stop-opacity="0.12"></stop>
+<stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal Grid Guides & Labels -->
+<!-- 100% (Y: 20) -->
+<line stroke="#E2E8F0" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="990" y1="20" y2="20"></line>
+<text class="font-label-mono text-[10px]" fill="#64748B" text-anchor="end" x="35" y="24">100%</text>
+<!-- 99.5% (Y: 80) -->
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="990" y1="80" y2="80"></line>
+<text class="font-label-mono text-[10px]" fill="#64748B" text-anchor="end" x="35" y="84">99.5%</text>
+<!-- 99.0% (Y: 140) -->
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="990" y1="140" y2="140"></line>
+<text class="font-label-mono text-[10px]" fill="#64748B" text-anchor="end" x="35" y="144">99.0%</text>
+<!-- 98.5% (Y: 200) -->
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="990" y1="200" y2="200"></line>
+<text class="font-label-mono text-[10px]" fill="#64748B" text-anchor="end" x="35" y="204">98.5%</text>
+<!-- Area fill for payment-api -->
+<path d="M 45,24 
+                     L 140,24 
+                     L 240,23 
+                     L 340,32 
+                     L 440,25 
+                     L 540,26 
+                     L 640,42 
+                     L 740,28 
+                     L 840,24 
+                     L 940,22 
+                     L 990,22 
+                     L 990,200 
+                     L 45,200 Z" fill="url(#area-payment)"></path>
+<!-- Line: auth-api (#10B981) - Rock Solid 100% -->
+<polyline fill="none" points="45,20 140,20 240,20 340,20 440,20 540,20 640,20 740,20 840,20 940,20 990,20" stroke="#10B981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<circle cx="640" cy="20" fill="#10B981" r="3"></circle>
+<circle cx="990" cy="20" fill="#10B981" r="3.5"></circle>
+<!-- Line: payment-api (#2563EB) -->
+<polyline fill="none" points="45,24 140,24 240,23 340,32 440,25 540,26 640,42 740,28 840,24 940,22 990,22" stroke="#2563EB" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<circle cx="340" cy="32" fill="#2563EB" r="3"></circle>
+<circle cx="640" cy="42" fill="#2563EB" r="3"></circle>
+<circle cx="990" cy="22" fill="#2563EB" r="3.5"></circle>
+<!-- Line: orders-api (#6366F1) -->
+<polyline fill="none" points="45,22 140,26 240,24 340,25 440,36 540,48 640,30 740,24 840,22 940,24 990,24" stroke="#6366F1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+<circle cx="540" cy="48" fill="#6366F1" r="3"></circle>
+<circle cx="990" cy="24" fill="#6366F1" r="3"></circle>
+</svg>
+<!-- Time Markers Under Horizontal Axis -->
+<div class="flex justify-between items-center pl-11 pr-2 pt-2 border-t border-[#F1F5F9] text-on-surface-variant font-label-mono text-[11px]">
+<span>-60m</span>
+<span>-45m</span>
+<span>-30m</span>
+<span>-15m</span>
+<span>-5m</span>
+<span class="text-primary font-semibold">Agora</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. SEÇÃO 'INCIDENTES RECENTES' (Tabela de Auditoria e SRE) -->
+<section class="card-base p-6">
+<!-- Section Header with Badges & Severity Legend -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between pb-5 border-b border-[#F1F5F9] gap-4">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-[20px]">history_toggle_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2.5">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Incidentes recentes</h2>
+<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-body-sm font-body-sm border border-emerald-200">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
+<span class="font-medium text-[11px]">0 incidentes ativos no momento</span>
+</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Histórico consolidado das últimas 24 horas e exercícios de simulação</p>
+</div>
+</div>
+<!-- Severity Legend -->
+<div class="flex flex-wrap items-center gap-2 text-[11px] font-label-mono">
+<span class="text-on-surface-variant uppercase text-[10px] font-semibold tracking-wider mr-1">Severidades:</span>
+<span class="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 font-semibold" title="Indisponibilidade Total">SEV-1: Crítico</span>
+<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-semibold" title="Degradação Severa">SEV-2: Alto</span>
+<span class="px-2 py-0.5 rounded bg-yellow-50 text-yellow-800 border border-yellow-200 font-semibold" title="Latência Anômala">SEV-3: Médio</span>
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold" title="Inconsistência Leve">SEV-4: Baixo</span>
+</div>
+</div>
+<!-- Incident Data Table -->
+<div class="overflow-x-auto mt-4">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F8FAFC] border-b border-[#E2E8F0] font-label-mono text-[11px] tracking-wider text-[#64748B] uppercase">
+<th class="py-3 px-4 font-semibold">Serviço</th>
+<th class="py-3 px-4 font-semibold">Severidade</th>
+<th class="py-3 px-4 font-semibold">Causa / Diagnóstico</th>
+<th class="py-3 px-4 font-semibold">Início</th>
+<th class="py-3 px-4 font-semibold">Duração</th>
+<th class="py-3 px-4 font-semibold">Ambiente</th>
+<th class="py-3 px-4 font-semibold text-right">Status da Resolução</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#F1F5F9] text-body-sm font-body-sm text-on-surface" id="incident-table-body">
+<!-- Row 1: SEV-1 Stone/Cielo Gateway -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">credit_card</span>
+<span class="font-code-body text-[12px] font-semibold text-on-surface">payment-api</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-label-mono text-[11px] bg-red-50 text-red-700 border border-red-200 font-semibold">
+<span class="h-1.5 w-1.5 rounded-full bg-red-600"></span>
+                  SEV-1
+                </span>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-body-md text-body-md font-medium text-on-surface">Timeout no conector da adquirente Stone/Cielo</div>
+<div class="font-code-body text-[11px] text-on-surface-variant">SocketTimeoutException no pool TCP primário (edge-br-sp1)</div>
+</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface-variant">Hoje, 14:22:10</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface">3m 45s</td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded font-label-mono text-[10px] bg-slate-100 text-slate-700 border border-slate-200 font-medium">Produção</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded font-body-sm text-[12px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+<span class="material-symbols-outlined text-[15px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                  Resolvido
+                </span>
+</td>
+</tr>
+<!-- Row 2: SEV-2 OAuth Spike -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+<span class="font-code-body text-[12px] font-semibold text-on-surface">auth-api</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-label-mono text-[11px] bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
+<span class="h-1.5 w-1.5 rounded-full bg-amber-600"></span>
+                  SEV-2
+                </span>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-body-md text-body-md font-medium text-on-surface">Spike de latência na validação de token OAuth</div>
+<div class="font-code-body text-[11px] text-on-surface-variant">Congestionamento na réplica read-only do cluster Redis</div>
+</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface-variant">Hoje, 11:05:42</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface">1m 12s</td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded font-label-mono text-[10px] bg-purple-50 text-purple-700 border border-purple-200 font-medium">Simulado</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded font-body-sm text-[12px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+<span class="material-symbols-outlined text-[15px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                  Resolvido
+                </span>
+</td>
+</tr>
+<!-- Row 3: SEV-3 Kafka Consumer Lag -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">shopping_cart_checkout</span>
+<span class="font-code-body text-[12px] font-semibold text-on-surface">orders-api</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-label-mono text-[11px] bg-yellow-50 text-yellow-800 border border-yellow-200 font-semibold">
+<span class="h-1.5 w-1.5 rounded-full bg-yellow-600"></span>
+                  SEV-3
+                </span>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-body-md text-body-md font-medium text-on-surface">Pico de consumo de memória no cluster Kafka orders</div>
+<div class="font-code-body text-[11px] text-on-surface-variant">Backpressure mitigado automaticamente via HPA autoscaling</div>
+</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface-variant">Hoje, 08:40:15</td>
+<td class="py-3.5 px-4 font-label-mono text-[12px] text-on-surface">4m 20s</td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded font-label-mono text-[10px] bg-slate-100 text-slate-700 border border-slate-200 font-medium">Produção</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded font-body-sm text-[12px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+<span class="material-symbols-outlined text-[15px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                  Resolvido
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Telemetry Digest -->
+<div class="flex flex-col sm:flex-row items-center justify-between pt-4 mt-3 border-t border-[#F1F5F9] text-body-sm font-body-sm text-on-surface-variant gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">security</span>
+<span>Políticas de Failover ativo: Multi-Cloud Ativo/Ativo (AWS us-east-1 + GCP southamerica-east1).</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline">
+          MTTR Médio (24h): <span class="font-semibold text-on-surface">2m 49s</span> • SLA Garantido: <span class="font-semibold text-on-surface">99.90%</span>
+</div>
+</div>
+</section>
+<!-- Bottom Footer Note -->
+<footer class="text-center py-2 text-on-surface-variant text-[11px] font-label-mono">
+      OLHO DE ZEUS — SRE APM SYSTEM • INFRAESTRUTURA DE PAGAMENTOS DE ALTA DISPONIBILIDADE
+    </footer>
+</div>
+<!-- Notification Banner / Micro-interaction Engine -->
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" id="toast-container"></div>
+<script>
+    // SRE Micro-Interactions: Manual Refresh & Simulation Feedback
+    const btnRefresh = document.getElementById('btn-manual-refresh');
+    const refreshIcon = document.getElementById('refresh-icon');
+
+    btnRefresh.addEventListener('click', () => {
+      refreshIcon.classList.add('animate-spin');
+      btnRefresh.disabled = true;
+
+      // Realistic latency jitter
+      setTimeout(() => {
+        refreshIcon.classList.remove('animate-spin');
+        btnRefresh.disabled = false;
+        
+        const latPayment = document.getElementById('lat-payment');
+        const latAuth = document.getElementById('lat-auth');
+        const latOrders = document.getElementById('lat-orders');
+
+        latPayment.innerText = `${Math.floor(32 + Math.random() * 5)} ms`;
+        latAuth.innerText = `${Math.floor(17 + Math.random() * 3)} ms`;
+        latOrders.innerText = `${Math.floor(40 + Math.random() * 6)} ms`;
+
+        showToast('Telemetria atualizada', 'Métricas de tráfego e latência sincronizadas com os nós do cluster.', 'info');
+      }, 700);
+    });
+
+    function triggerSimulation(service, selectId) {
+      const select = document.getElementById(selectId);
+      const fault = select.value;
+
+      showToast(`Simulação injetada em [${service}]`, `Cenário de teste: "${fault}". A telemetria e o SLA permaneceram sob isolamento de sandbox.`, 'warning');
+    }
+
+    function showToast(title, description, type) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-lg max-w-sm transition-all duration-300 transform translate-y-2 opacity-0';
+
+      const icon = type === 'warning' ? 'warning' : 'check_circle';
+      const iconColor = type === 'warning' ? 'text-amber-500' : 'text-primary';
+
+      toast.innerHTML = `
+        <span class="material-symbols-outlined ${iconColor} text-[20px] shrink-0 mt-0.5">${icon}</span>
+        <div class="flex-1">
+          <p class="font-headline-sm text-[13px] font-semibold text-on-surface">${title}</p>
+          <p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">${description}</p>
+        </div>
+      `;
+
+      container.appendChild(toast);
+
+      // Trigger enter animation
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      // Auto dismiss
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+  </script>
+</body></html>

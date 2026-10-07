@@ -1,0 +1,406 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>OLHO DE ZEUS — Monitor de incidentes de APIs</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "on-primary-container": "#eeefff",
+            "primary": "#004ac6",
+            "primary-fixed": "#dbe1ff",
+            "on-primary": "#ffffff",
+            "inverse-on-surface": "#eef0ff",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "on-tertiary-container": "#ffecea",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "surface-container-high": "#e2e7ff",
+            "inverse-surface": "#283044",
+            "on-background": "#131b2e",
+            "tertiary-container": "#cf2c30",
+            "secondary-fixed-dim": "#4edea3",
+            "surface-tint": "#0053db",
+            "surface-container-low": "#f2f3ff",
+            "on-primary-fixed-variant": "#003ea8",
+            "on-secondary-fixed": "#002113",
+            "primary-container": "#2563eb",
+            "surface-variant": "#dae2fd",
+            "tertiary": "#ab0b1c",
+            "tertiary-fixed": "#ffdad7",
+            "surface-bright": "#faf8ff",
+            "on-surface": "#131b2e",
+            "secondary-fixed": "#6ffbbe",
+            "secondary-container": "#6cf8bb",
+            "outline-variant": "#c3c6d7",
+            "on-secondary-fixed-variant": "#005236",
+            "surface-container-highest": "#dae2fd",
+            "surface-container": "#eaedff",
+            "background": "#faf8ff",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#b4c5ff",
+            "on-secondary-container": "#00714d",
+            "secondary": "#006c49",
+            "error": "#ba1a1a",
+            "surface": "#faf8ff",
+            "on-tertiary-fixed-variant": "#930013",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "surface-dim": "#d2d9f4",
+            "on-primary-fixed": "#00174b",
+            "primary-fixed-dim": "#b4c5ff",
+            "on-tertiary-fixed": "#410004",
+            "on-secondary": "#ffffff",
+            "outline": "#737686"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-desktop": "2rem",
+            "space-md": "0.75rem",
+            "gutter": "1rem",
+            "space-xl": "1.75rem",
+            "space-sm": "0.5rem",
+            "margin": "1rem",
+            "space-lg": "1.25rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "code-metric": ["JetBrains Mono"],
+            "label-mono": ["JetBrains Mono"],
+            "display-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "code-body": ["JetBrains Mono"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-metric": ["24px", { "lineHeight": "28px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "label-mono": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "display-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "code-body": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#F5F7FA] text-on-surface antialiased min-h-screen">
+<div class="max-w-[1440px] mx-auto p-6 space-y-6">
+<!-- Top Header -->
+<header class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex flex-col">
+<h1 class="font-headline-md text-headline-md tracking-tight font-black text-on-surface">
+          OLHO DE ZEUS
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant font-normal">
+          Monitor de incidentes de APIs
+        </p>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-lowest border border-outline-variant/40 shadow-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant tracking-normal">
+          Atualização automática: 5s
+        </span>
+</div>
+</header>
+<!-- 3 Compact Service Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- payment-api -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant/50 p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-mono text-label-mono font-semibold text-on-surface">payment-api</span>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] font-body-sm text-body-sm font-medium">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+              Operational
+            </div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-3">
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Latência média</span>
+<span class="font-code-metric text-code-metric text-on-surface">120 <span class="text-xs font-normal text-on-surface-variant">ms</span></span>
+</div>
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Uptime 24h</span>
+<span class="font-code-metric text-code-metric text-on-surface">99,9%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2 border-t border-[#F1F5F9] flex flex-col gap-3">
+  <div class="grid grid-cols-2 gap-2">
+    <div>
+      <label class="font-body-sm text-[11px] text-on-surface-variant block mb-1 font-medium">Modo</label>
+      <select class="w-full bg-[#F8FAFC] border border-outline-variant/60 rounded text-xs font-body-sm text-on-surface py-1.5 px-2.5 focus:outline-none focus:ring-1 focus:ring-primary-container">
+        <option value="Degraded" selected="">Degraded</option>
+        <option value="Down">Down</option>
+      </select>
+    </div>
+    <div>
+      <label class="font-body-sm text-[11px] text-on-surface-variant block mb-1 font-medium">Duração</label>
+      <select class="w-full bg-[#F8FAFC] border border-outline-variant/60 rounded text-xs font-body-sm text-on-surface py-1.5 px-2.5 focus:outline-none focus:ring-1 focus:ring-primary-container">
+        <option value="60s" selected="">60 segundos</option>
+        <option value="120s">120 segundos</option>
+        <option value="300s">5 minutos</option>
+      </select>
+    </div>
+  </div>
+  <button class="w-full bg-primary-container hover:bg-primary text-white text-xs font-medium font-body-sm px-4 py-1.5 rounded transition-colors duration-150 shadow-sm">
+    Simular
+  </button>
+  <div class="flex items-center gap-2 px-2.5 py-1.5 rounded bg-surface-container border border-outline-variant/40">
+    <span class="relative flex h-2 w-2">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
+    </span>
+    <span class="font-body-sm text-xs text-on-surface font-medium">
+      Simulação iniciada — expira em 60s
+    </span>
+  </div>
+</div>
+</div>
+<!-- auth-api -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant/50 p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-mono text-label-mono font-semibold text-on-surface">auth-api</span>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] font-body-sm text-body-sm font-medium">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+              Operational
+            </div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-3">
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Latência média</span>
+<span class="font-code-metric text-code-metric text-on-surface">60 <span class="text-xs font-normal text-on-surface-variant">ms</span></span>
+</div>
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Uptime 24h</span>
+<span class="font-code-metric text-code-metric text-on-surface">100,0%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2 border-t border-[#F1F5F9] flex items-center gap-2">
+<select class="w-full bg-[#F8FAFC] border border-outline-variant/60 rounded text-xs font-body-sm text-on-surface py-1.5 px-2.5 focus:outline-none focus:ring-1 focus:ring-primary-container">
+<option value="Degraded">Degraded</option>
+<option value="Down">Down</option>
+</select>
+<button class="bg-primary-container hover:bg-primary text-white text-xs font-medium font-body-sm px-4 py-1.5 rounded transition-colors duration-150 shrink-0 shadow-sm">
+            Simular
+          </button>
+</div>
+</div>
+<!-- orders-api -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant/50 p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-mono text-label-mono font-semibold text-on-surface">orders-api</span>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] font-body-sm text-body-sm font-medium">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+              Operational
+            </div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-3">
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Latência média</span>
+<span class="font-code-metric text-code-metric text-on-surface">180 <span class="text-xs font-normal text-on-surface-variant">ms</span></span>
+</div>
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mb-1">Uptime 24h</span>
+<span class="font-code-metric text-code-metric text-on-surface">99,8%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2 border-t border-[#F1F5F9] flex items-center gap-2">
+<select class="w-full bg-[#F8FAFC] border border-outline-variant/60 rounded text-xs font-body-sm text-on-surface py-1.5 px-2.5 focus:outline-none focus:ring-1 focus:ring-primary-container">
+<option value="Degraded">Degraded</option>
+<option value="Down">Down</option>
+</select>
+<button class="bg-primary-container hover:bg-primary text-white text-xs font-medium font-body-sm px-4 py-1.5 rounded transition-colors duration-150 shrink-0 shadow-sm">
+            Simular
+          </button>
+</div>
+</div>
+</section>
+<!-- Disponibilidade — última hora -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant/50 p-6 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-3 border-b border-[#F1F5F9] gap-4">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Disponibilidade — última hora</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Percentual de uptime e telemetria contínua por microsserviço</p>
+</div>
+<!-- Legenda com cores específicas solicitadas -->
+<div class="flex items-center gap-4 text-xs font-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded bg-[#2563eb]"></span>
+<span class="text-on-surface font-medium">payment-api</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded bg-[#16a34a]"></span>
+<span class="text-on-surface font-medium">auth-api</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded bg-[#6366f1]"></span>
+<span class="text-on-surface font-medium">orders-api</span>
+</div>
+</div>
+</div>
+<!-- Gráfico de Linha Recharts-Style SVG -->
+<div class="w-full h-64 relative flex">
+<!-- Eixo Y de Porcentagem (99.0% a 100%) -->
+<div class="w-14 flex flex-col justify-between items-end pr-3 pb-6 text-right font-label-mono text-label-mono text-on-surface-variant select-none">
+<span class="">100.0%</span>
+<span class="">99.8%</span>
+<span class="">99.6%</span>
+<span class="">99.4%</span>
+<span class="">99.2%</span>
+<span class="">99.0%</span>
+</div>
+<div class="flex-1 flex flex-col h-full">
+<!-- Canvas da Grade e Linhas -->
+<div class="relative w-full h-[calc(100%-24px)]">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 1000 200">
+<!-- Grid horizontal -->
+<line stroke="#F1F5F9" stroke-width="1" x1="0" x2="1000" y1="0" y2="0"></line>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="1000" y1="40" y2="40"></line>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="1000" y1="80" y2="80"></line>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="1000" y1="120" y2="120"></line>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="1000" y1="160" y2="160"></line>
+<line stroke="#E2E8F0" stroke-width="1" x1="0" x2="1000" y1="200" y2="200"></line>
+<!-- Linha payment-api (#2563eb) - Flutuação 99.8% a 100% -->
+<path d="M 0,25 Q 125,20 250,22 T 500,26 T 750,15 T 1000,10" fill="none" stroke="#2563eb" stroke-width="2"></path>
+<!-- Pontos de ancoragem discretos -->
+<circle cx="250" cy="22" fill="#2563eb" r="2.5"></circle>
+<circle cx="500" cy="26" fill="#2563eb" r="2.5"></circle>
+<circle cx="750" cy="15" fill="#2563eb" r="2.5"></circle>
+<circle cx="1000" cy="10" fill="#2563eb" r="3"></circle>
+<!-- Linha auth-api (#16a34a) - Estável 100.0% -->
+<path d="M 0,4 L 1000,4" fill="none" stroke="#16a34a" stroke-width="2"></path>
+<circle cx="250" cy="4" fill="#16a34a" r="2.5"></circle>
+<circle cx="500" cy="4" fill="#16a34a" r="2.5"></circle>
+<circle cx="750" cy="4" fill="#16a34a" r="2.5"></circle>
+<circle cx="1000" cy="4" fill="#16a34a" r="3"></circle>
+<!-- Linha orders-api (#6366f1) - Leve oscilação em 99.7% -->
+<path d="M 0,55 Q 150,60 300,50 T 600,68 T 850,42 T 1000,38" fill="none" stroke="#6366f1" stroke-width="2"></path>
+<circle cx="300" cy="50" fill="#6366f1" r="2.5"></circle>
+<circle cx="600" cy="68" fill="#6366f1" r="2.5"></circle>
+<circle cx="850" cy="42" fill="#6366f1" r="2.5"></circle>
+<circle cx="1000" cy="38" fill="#6366f1" r="3"></circle>
+</svg>
+</div>
+<!-- Marcadores de tempo no eixo X -->
+<div class="w-full flex justify-between pt-2 text-xs font-label-mono text-label-mono text-on-surface-variant select-none">
+<span class="">-60m</span>
+<span class="">-45m</span>
+<span class="">-30m</span>
+<span class="">-15m</span>
+<span class="">Agora</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Incidentes recentes -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant/50 p-6 shadow-sm">
+<div class="mb-4">
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Incidentes recentes</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Histórico de eventos mitigados e resolvidos nas últimas 72 horas</p>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#F1F5F9] bg-[#F8FAFC]">
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Serviço</th>
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Severidade</th>
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Causa</th>
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Início</th>
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Duração</th>
+<th class="py-2.5 px-3 font-label-mono text-label-mono uppercase text-[#64748B] font-semibold">Simulado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#F1F5F9] font-body-sm text-body-sm">
+<!-- Incidente 1: payment-api | SEV-1 -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3 px-3 font-label-mono text-on-surface font-medium">payment-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-label-mono font-medium bg-[#FEF2F2] text-[#991B1B] border border-[#FECACA]">
+                  SEV-1
+                </span>
+</td>
+<td class="py-3 px-3 text-[#1E293B]">Timeout no gateway de cartão</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">Ontem, 16:40</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">4m 12s</td>
+<td class="py-3 px-3 text-on-surface-variant">Não</td>
+</tr>
+<!-- Incidente 2: auth-api | SEV-2 -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3 px-3 font-label-mono text-on-surface font-medium">auth-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-label-mono font-medium bg-[#FFFBEB] text-[#92400E] border border-[#FDE68A]">
+                  SEV-2
+                </span>
+</td>
+<td class="py-3 px-3 text-[#1E293B]">Pool de conexões esgotado</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">Ontem, 11:15</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">2m 30s</td>
+<td class="py-3 px-3 text-on-surface-variant">Não</td>
+</tr>
+<!-- Incidente 3: payment-api | SEV-1 -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3 px-3 font-label-mono text-on-surface font-medium">payment-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-label-mono font-medium bg-[#FEF2F2] text-[#991B1B] border border-[#FECACA]">
+                  SEV-1
+                </span>
+</td>
+<td class="py-3 px-3 text-[#1E293B]">Deploy com rollback</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">2 dias atrás</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">6m 50s</td>
+<td class="py-3 px-3 text-on-surface-variant">Não</td>
+</tr>
+<!-- Incidente 4: orders-api | SEV-3 -->
+<tr class="hover:bg-[#F8FAFC] transition-colors duration-150">
+<td class="py-3 px-3 font-label-mono text-on-surface font-medium">orders-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-label-mono font-medium bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">
+                  SEV-3
+                </span>
+</td>
+<td class="py-3 px-3 text-[#1E293B]">Fila de mensagens acumulada</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">3 dias atrás</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-mono">8m 20s</td>
+<td class="py-3 px-3 text-primary font-medium">Sim</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+
+
+</body></html>

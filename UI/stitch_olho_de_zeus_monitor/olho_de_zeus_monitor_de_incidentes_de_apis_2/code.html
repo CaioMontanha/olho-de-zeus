@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OLHO DE ZEUS — Monitor de incidentes de APIs</title>
+<!-- Typography: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#c3c6d7",
+            "on-primary-fixed": "#00174b",
+            "on-tertiary-container": "#ffecea",
+            "primary": "#004ac6",
+            "surface-container-high": "#e2e7ff",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#00714d",
+            "tertiary": "#ab0b1c",
+            "tertiary-fixed": "#ffdad7",
+            "surface-container-low": "#f2f3ff",
+            "inverse-primary": "#b4c5ff",
+            "outline": "#737686",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-lowest": "#ffffff",
+            "inverse-on-surface": "#eef0ff",
+            "surface-variant": "#dae2fd",
+            "surface-bright": "#faf8ff",
+            "secondary": "#006c49",
+            "primary-container": "#2563eb",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#410004",
+            "on-background": "#131b2e",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-tint": "#0053db",
+            "inverse-surface": "#283044",
+            "on-tertiary-fixed-variant": "#930013",
+            "surface": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#005236",
+            "on-primary-fixed-variant": "#003ea8",
+            "background": "#faf8ff",
+            "on-surface": "#131b2e",
+            "surface-container": "#eaedff",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#6ffbbe",
+            "on-error": "#ffffff",
+            "secondary-container": "#6cf8bb",
+            "on-surface-variant": "#434655",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#002113",
+            "on-primary-container": "#eeefff",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "secondary-fixed-dim": "#4edea3",
+            "surface-dim": "#d2d9f4",
+            "error": "#ba1a1a",
+            "tertiary-container": "#cf2c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "1.75rem",
+            "space-md": "0.75rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "gutter": "1rem",
+            "margin-desktop": "2rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-sm": ["Inter"],
+            "code-metric": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "label-mono": ["JetBrains Mono"],
+            "display-lg-mobile": ["Inter"],
+            "headline-md": ["Inter"],
+            "code-body": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "code-metric": ["24px", { "lineHeight": "28px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-mono": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "display-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-body": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #F5F7FA;
+      color: #131B2E;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
+      display: inline-block;
+    }
+    .card-base {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen" style="background-color: #F6F8FA; color: #1E293B; font-family: Inter, system-ui, sans-serif;">
+<!-- Shell Canvas Wrapper (1440px Centered Workspace) -->
+<div class="max-w-[1440px] mx-auto px-6 py-6 flex flex-col gap-6"><!-- 1. COMPACT HEADER -->
+<header class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<h1 class="text-xl font-bold tracking-tight text-[#1E293B]">OLHO DE ZEUS</h1>
+<p class="text-sm text-[#64748B] mt-0.5">Monitor de incidentes de APIs</p>
+</div>
+<div class="flex items-center gap-2 text-sm text-[#64748B]">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+</span>
+<span>Atualizado há poucos segundos</span>
+</div>
+</header>
+<!-- 2. THREE SERVICE CARDS (payment-api, auth-api, orders-api) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- CARD 1: payment-api -->
+<div class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-semibold text-base text-[#1E293B] font-mono">payment-api</h3>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+          Operational
+        </span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Latência média</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">34ms</span>
+</div>
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Uptime (24h)</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">99.9%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2">
+<div class="flex items-center gap-2">
+<select class="w-full text-xs rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#1E293B] py-2 px-2.5 focus:border-blue-600 focus:outline-none" id="sim-select-payment">
+<option value="Degraded">Degraded</option>
+<option value="Down">Down</option>
+</select>
+<button class="px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium shrink-0 transition-colors duration-150 shadow-sm" onclick="triggerSimulation('payment-api', 'sim-select-payment')" type="button">
+          Simular
+        </button>
+</div>
+</div>
+</div>
+<!-- CARD 2: auth-api -->
+<div class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-semibold text-base text-[#1E293B] font-mono">auth-api</h3>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+          Operational
+        </span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Latência média</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">18ms</span>
+</div>
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Uptime (24h)</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">100.0%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2">
+<div class="flex items-center gap-2">
+<select class="w-full text-xs rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#1E293B] py-2 px-2.5 focus:border-blue-600 focus:outline-none" id="sim-select-auth">
+<option value="Degraded">Degraded</option>
+<option value="Down">Down</option>
+</select>
+<button class="px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium shrink-0 transition-colors duration-150 shadow-sm" onclick="triggerSimulation('auth-api', 'sim-select-auth')" type="button">
+          Simular
+        </button>
+</div>
+</div>
+</div>
+<!-- CARD 3: orders-api -->
+<div class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-semibold text-base text-[#1E293B] font-mono">orders-api</h3>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+          Operational
+        </span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-[#F1F5F9]">
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Latência média</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">42ms</span>
+</div>
+<div>
+<span class="text-xs text-[#64748B] uppercase tracking-wider block">Uptime (24h)</span>
+<span class="text-2xl font-bold font-mono text-[#1E293B] mt-1 block">99.8%</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-2">
+<div class="flex items-center gap-2">
+<select class="w-full text-xs rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#1E293B] py-2 px-2.5 focus:border-blue-600 focus:outline-none" id="sim-select-orders">
+<option value="Degraded">Degraded</option>
+<option value="Down">Down</option>
+</select>
+<button class="px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium shrink-0 transition-colors duration-150 shadow-sm" onclick="triggerSimulation('orders-api', 'sim-select-orders')" type="button">
+          Simular
+        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. SECTION 'Disponibilidade — última hora' -->
+<section class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm p-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#F1F5F9] gap-4">
+<div>
+<h2 class="text-base font-semibold text-[#1E293B]">Disponibilidade — última hora</h2>
+<p class="text-xs text-[#64748B] mt-0.5">Janela contínua de 60 minutos</p>
+</div>
+<!-- Recharts Style Legend -->
+<div class="flex items-center gap-4 text-xs font-mono">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#2563EB]"></span>
+<span class="text-[#1E293B]">payment-api</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#10B981]"></span>
+<span class="text-[#1E293B]">auth-api</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 rounded-full bg-[#6366F1]"></span>
+<span class="text-[#1E293B]">orders-api</span>
+</div>
+</div>
+</div>
+<!-- SVG Line Chart (Recharts aesthetic) -->
+<div class="pt-6">
+<div class="relative w-full h-56">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 200">
+<!-- Horizontal Ticks & Axis -->
+<line stroke="#E2E8F0" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="995" y1="20" y2="20"></line>
+<text fill="#64748B" font-family="monospace" font-size="11" text-anchor="end" x="38" y="24">100%</text>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="995" y1="90" y2="90"></line>
+<text fill="#64748B" font-family="monospace" font-size="11" text-anchor="end" x="38" y="94">99.5%</text>
+<line stroke="#F1F5F9" stroke-dasharray="3 3" stroke-width="1" x1="45" x2="995" y1="160" y2="160"></line>
+<text fill="#64748B" font-family="monospace" font-size="11" text-anchor="end" x="38" y="164">99.0%</text>
+<!-- auth-api line (#10B981) -->
+<polyline fill="none" points="45,20 140,20 240,20 340,20 440,20 540,20 640,20 740,20 840,20 940,20 995,20" stroke="#10B981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<circle cx="995" cy="20" fill="#10B981" r="3"></circle>
+<!-- payment-api line (#2563EB) -->
+<polyline fill="none" points="45,23 140,24 240,22 340,30 440,25 540,26 640,40 740,28 840,24 940,22 995,22" stroke="#2563EB" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<circle cx="995" cy="22" fill="#2563EB" r="3"></circle>
+<!-- orders-api line (#6366F1) -->
+<polyline fill="none" points="45,22 140,25 240,23 340,24 440,34 540,44 640,28 740,23 840,22 940,23 995,23" stroke="#6366F1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<circle cx="995" cy="23" fill="#6366F1" r="3"></circle>
+</svg>
+<!-- Time Axis -->
+<div class="flex justify-between items-center pl-10 pr-1 pt-2 border-t border-[#F1F5F9] text-xs font-mono text-[#64748B]">
+<span>-60m</span>
+<span>-45m</span>
+<span>-30m</span>
+<span>-15m</span>
+<span class="text-[#2563EB] font-semibold">Agora</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. SECTION 'Incidentes recentes' -->
+<section class="bg-white border border-[#E2E8F0] rounded-lg shadow-sm p-6">
+<div class="pb-4 border-b border-[#F1F5F9]">
+<h2 class="text-base font-semibold text-[#1E293B]">Incidentes recentes</h2>
+</div>
+<div class="overflow-x-auto mt-2">
+<table class="w-full text-left border-collapse text-xs">
+<thead>
+<tr class="border-b border-[#E2E8F0] text-[#64748B] font-mono uppercase tracking-wider">
+<th class="py-3 px-3 font-semibold">Serviço</th>
+<th class="py-3 px-3 font-semibold">Severidade</th>
+<th class="py-3 px-3 font-semibold">Causa</th>
+<th class="py-3 px-3 font-semibold">Início</th>
+<th class="py-3 px-3 font-semibold">Duração</th>
+<th class="py-3 px-3 font-semibold">Simulado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#F1F5F9] text-[#1E293B]">
+<!-- Row 1: payment-api -->
+<tr class="hover:bg-[#F8FAFC] transition-colors">
+<td class="py-3 px-3 font-mono font-medium text-[#2563EB]">payment-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-red-50 text-red-700 border border-red-200">
+              SEV-1
+            </span>
+</td>
+<td class="py-3 px-3 text-sm font-medium">Timeout no conector adquirente</td>
+<td class="py-3 px-3 font-mono text-[#64748B]">Hoje, 14:22</td>
+<td class="py-3 px-3 font-mono font-medium">3m 45s</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 text-slate-700 border border-slate-200 font-medium">
+              Não
+            </span>
+</td>
+</tr>
+<!-- Row 2: auth-api -->
+<tr class="hover:bg-[#F8FAFC] transition-colors">
+<td class="py-3 px-3 font-mono font-medium text-[#2563EB]">auth-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+              SEV-2
+            </span>
+</td>
+<td class="py-3 px-3 text-sm font-medium">Spike de latência no Redis</td>
+<td class="py-3 px-3 font-mono text-[#64748B]">Hoje, 11:05</td>
+<td class="py-3 px-3 font-mono font-medium">1m 12s</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-purple-50 text-purple-700 border border-purple-200 font-medium">
+              Sim
+            </span>
+</td>
+</tr>
+<!-- Row 3: orders-api -->
+<tr class="hover:bg-[#F8FAFC] transition-colors">
+<td class="py-3 px-3 font-mono font-medium text-[#2563EB]">orders-api</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-yellow-50 text-yellow-800 border border-yellow-200">
+              SEV-3
+            </span>
+</td>
+<td class="py-3 px-3 text-sm font-medium">Backpressure no Kafka</td>
+<td class="py-3 px-3 font-mono text-[#64748B]">Hoje, 08:40</td>
+<td class="py-3 px-3 font-mono font-medium">4m 20s</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 text-slate-700 border border-slate-200 font-medium">
+              Não
+            </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section></div>
+<!-- Notification Banner / Micro-interaction Engine -->
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" id="toast-container"></div>
+<script>
+    // SRE Micro-Interactions: Manual Refresh & Simulation Feedback
+    const btnRefresh = document.getElementById('btn-manual-refresh');
+    const refreshIcon = document.getElementById('refresh-icon');
+
+    btnRefresh.addEventListener('click', () => {
+      refreshIcon.classList.add('animate-spin');
+      btnRefresh.disabled = true;
+
+      // Realistic latency jitter
+      setTimeout(() => {
+        refreshIcon.classList.remove('animate-spin');
+        btnRefresh.disabled = false;
+        
+        const latPayment = document.getElementById('lat-payment');
+        const latAuth = document.getElementById('lat-auth');
+        const latOrders = document.getElementById('lat-orders');
+
+        latPayment.innerText = `${Math.floor(32 + Math.random() * 5)} ms`;
+        latAuth.innerText = `${Math.floor(17 + Math.random() * 3)} ms`;
+        latOrders.innerText = `${Math.floor(40 + Math.random() * 6)} ms`;
+
+        showToast('Telemetria atualizada', 'Métricas de tráfego e latência sincronizadas com os nós do cluster.', 'info');
+      }, 700);
+    });
+
+    function triggerSimulation(service, selectId) {
+      const select = document.getElementById(selectId);
+      const fault = select.value;
+
+      showToast(`Simulação injetada em [${service}]`, `Cenário de teste: "${fault}". A telemetria e o SLA permaneceram sob isolamento de sandbox.`, 'warning');
+    }
+
+    function showToast(title, description, type) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-lg max-w-sm transition-all duration-300 transform translate-y-2 opacity-0';
+
+      const icon = type === 'warning' ? 'warning' : 'check_circle';
+      const iconColor = type === 'warning' ? 'text-amber-500' : 'text-primary';
+
+      toast.innerHTML = `
+        <span class="material-symbols-outlined ${iconColor} text-[20px] shrink-0 mt-0.5">${icon}</span>
+        <div class="flex-1">
+          <p class="font-headline-sm text-[13px] font-semibold text-on-surface">${title}</p>
+          <p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">${description}</p>
+        </div>
+      `;
+
+      container.appendChild(toast);
+
+      // Trigger enter animation
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      // Auto dismiss
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+  </script>
+</body></html>
