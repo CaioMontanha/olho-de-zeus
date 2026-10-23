@@ -291,7 +291,7 @@ function App() {
         </>
       )}
       </>}
-      <a className="portfolio-launcher" href="/portfolio/index.html" target="_blank" rel="noreferrer" aria-label="Abrir meu portfólio em uma nova aba" title="Meu portfólio">
+      <a className="portfolio-launcher" href="https://caio-montanha.vercel.app/" target="_blank" rel="noreferrer" aria-label="Abrir meu portfólio em uma nova aba" title="Meu portfólio">
         <span className="portfolio-mark" aria-hidden="true"><img src="/logo_montanha_2_VERSAO_2.png" alt="" /></span>
         <span>Portfólio</span>
       </a>
