@@ -12,9 +12,13 @@ services:
     environment:
       DATABASE_URL: postgres://zeus:zeus@db:5432/zeus
       PORT: 3001
+      ZEUS_ADMIN_TOKEN: ${ZEUS_ADMIN_TOKEN:?Configure ZEUS_ADMIN_TOKEN no arquivo .env}
+      API_CREDENTIALS_KEY: ${API_CREDENTIALS_KEY:?Configure API_CREDENTIALS_KEY no arquivo .env}
     depends_on: [db]
     ports: ["3001:3001"]
   web:
     build: ./web
+    environment:
+      VITE_API_PROXY_TARGET: http://api:3001
     depends_on: [api]
     ports: ["5173:5173"]

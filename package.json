@@ -1,1 +1,19 @@
-{"name":"olho-de-zeus","private":true,"workspaces":["api","web"],"scripts":{"dev":"concurrently \"npm run dev --workspace api\" \"npm run dev --workspace web\"","test":"npm run test --workspace api","build":"npm run build --workspace api && npm run build --workspace web"},"devDependencies":{"concurrently":"^9.2.4"}}
+{
+    "name": "olho-de-zeus",
+    "private": true,
+    "workspaces": [
+        "api",
+        "web"
+    ],
+    "scripts": {
+    "dev": "node scripts/setup-local.mjs && concurrently -k \"npm run db:dev\" \"npm run dev --workspace api\" \"npm run dev --workspace web -- --host 127.0.0.1\"",
+        "db:dev": "node scripts/dev-db.mjs",
+        "test": "npm run test --workspace api",
+        "build": "npm run build --workspace api && npm run build --workspace web"
+    },
+    "devDependencies": {
+        "@electric-sql/pglite": "^0.5.8",
+        "@electric-sql/pglite-socket": "^0.2.11",
+        "concurrently": "^9.2.4"
+    }
+}
